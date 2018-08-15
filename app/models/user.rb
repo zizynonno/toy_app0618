@@ -8,7 +8,7 @@ class User < ApplicationRecord
                     format: { with: VALID_EMAIL_REGEX },
                     uniqueness: { case_sensitive: false }
   has_secure_password
-  validates :password, presence: true, length: { minimum: 6 }
+  validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
 
   # 渡された文字列のハッシュ値を返す
   def User.digest(string)
@@ -37,5 +37,12 @@ class User < ApplicationRecord
     # これはuser.forgetメソッドという呼ばれ方をしている
   def forget
     update_attribute(:remember_digest, nil)
+  end
+  
+  def logged_in_uer
+    unless logged_in?
+     flash[:danger] = "Please log in"
+     redirect_to login_url
+    end
   end
 end
